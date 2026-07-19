@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GLB 粒子人体验证</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0a0a14;
+      overflow: hidden;
+      font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    }
+    canvas { display: block; }
+    #info {
+      position: fixed; top: 20px; left: 20px; z-index: 10;
+      color: rgba(255,255,255,0.7); font-size: 13px; line-height: 1.6;
+      pointer-events: none;
+    }
+    #hint {
+      position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+      z-index: 10; color: rgba(255,255,255,0.4); font-size: 14px;
+      pointer-events: none;
+    }
+    #panel {
+      position: fixed; right: 10px; top: 50%; transform: translateY(-50%);
+      z-index: 10; display: flex; flex-direction: column; gap: 8px;
+      background: rgba(0,0,0,0.55); padding: 12px 14px; border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.1);
+      max-height: 90vh; overflow-y: auto;
+    }
+    #panel .section { color: rgba(255,255,255,0.5); font-size: 10px; padding-top: 4px; border-top: 1px solid rgba(255,255,255,0.08); }
+    #panel label { color: rgba(255,255,255,0.7); font-size: 11px; display: flex; flex-direction: column; gap: 3px; }
+    #panel input[type="range"] { width: 120px; accent-color: #ffd700; }
+    #panel .value { color: #ffd700; font-size: 10px; }
+    #panel .color-row { display: flex; align-items: center; gap: 6px; }
+    #panel .color-row input[type="color"] { width: 22px; height: 22px; border: none; border-radius: 4px; cursor: pointer; background: none; padding: 0; }
+    #panel .color-row span { flex: 1; font-size: 11px; color: rgba(255,255,255,0.7); }
+    #panel .part-toggle { font-size: 10px; color: rgba(255,255,255,0.5); cursor: pointer; user-select: none; }
+    #panel select { background: #1a1a2e; color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 3px 5px; border-radius: 4px; font-size: 11px; }
+
+    /* ===== SpotlightCard 追光卡片 ===== */
+    #card-container {
+      position: fixed; left: 20px; top: 50%; transform: translateY(-50%);
+      z-index: 10; display: flex; flex-direction: column; gap: 12px;
+    }
+    .card-spotlight {
+      position: relative;
+      width: 180px;
+      padding: 20px 18px;
+      border-radius: 1.5rem;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(10,10,20,0.7);
+      backdrop-filter: blur(10px);
+      overflow: hidden;
+      cursor: pointer;
+      --mouse-x: 50%;
+      --mouse-y: 50%;
+      --spotlight-color: rgba(255,255,255,0.05);
+      transition: border-color 0.4s ease, background 0.4s ease;
+    }
+    .card-spotlight::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(
+        circle at var(--mouse-x) var(--mouse-y),
+        var(--spotlight-color), transparent 70%
+      );
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .card-spotlight:hover::before,
+    .card-spotlight.active::before { opacity: 0.8; }
+    .card-spotlight:hover { border-color: rgba(255,255,255,0.25); background: rgba(10,10,20,0.85); }
+    .card-spotlight.active { border-color: var(--spotlight-color); background: rgba(10,10,20,0.9); }
+    .card-spotlight > * { position: relative; z-index: 2; }
+    .card-icon { font-size: 22px; margin-bottom: 6px; }
+    .card-title { font-size: 15px; font-weight: 500; color: #fff; margin-bottom: 2px; }
+    .card-subtitle { font-size: 11px; color: rgba(255,255,255,0.4); }
+  </style>
+</head>
+<body>
+  <div id="info"></div>
+  <div id="hint">🖱 拖动旋转 &nbsp;|&nbsp; 🖱 滚轮缩放 &nbsp;|&nbsp; ⌨ R 重置视角</div>
+  <div id="panel">
+    <label>粒子大小 <span class="value" id="val-size">6.0</span>
+      <input type="range" id="slider-size" min="0.5" max="15" step="0.1" value="6">
+    </label>
+    <label>采样率 <span class="value" id="val-sample">10%</span>
+      <input type="range" id="slider-sample" min="3" max="100" step="1" value="10">
+    </label>
+    <label>分散度 <span class="value" id="val-scatter">0.03</span>
+      <input type="range" id="slider-scatter" min="0" max="0.2" step="0.005" value="0.03">
+    </label>
+    <label>呼吸强度 <span class="value" id="val-breath">0.5</span>
+      <input type="range" id="slider-breath" min="0" max="2" step="0.1" value="0.5">
+    </label>
+    <label>漂浮幅度 <span class="value" id="val-float">0.3</span>
+      <input type="range" id="slider-float" min="0" max="1" step="0.05" value="0.3">
+    </label>
+    <label>混合模式
+      <select id="select-blend">
+        <option value="additive" selected>Additive 叠加</option>
+        <option value="normal">Normal 正常</option>
+      </select>
+    </label>
+    <div class="section">环境粒子</div>
+    <label>数量 <span class="value" id="val-ambient">200</span>
+      <input type="range" id="slider-ambient" min="0" max="500" step="10" value="200">
+    </label>
+    <label>大小 <span class="value" id="val-ambient-size">4</span>
+      <input type="range" id="slider-ambient-size" min="1" max="15" step="1" value="4">
+    </label>
+    <label>速度 <span class="value" id="val-ambient-speed">1.0</span>
+      <input type="range" id="slider-ambient-speed" min="0.1" max="5" step="0.1" value="1">
+    </label>
+    <div class="color-row"><span>颜色A</span><input type="color" id="color-ambient1" value="#ffd700"></div>
+    <div class="color-row"><span>颜色B</span><input type="color" id="color-ambient2" value="#4488ff"></div>
+    <div class="section">各部位颜色</div>
+    <div class="color-row"><span>头部</span><input type="color" class="part-color" data-part="head" value="#ffd700"><span class="part-toggle" data-part="head">👁</span></div>
+    <div class="color-row"><span>心脏</span><input type="color" class="part-color" data-part="heart" value="#ff3366"><span class="part-toggle" data-part="heart">👁</span></div>
+    <div class="color-row"><span>身体</span><input type="color" class="part-color" data-part="body" value="#4488ff"><span class="part-toggle" data-part="body">👁</span></div>
+    <div class="color-row"><span>手</span><input type="color" class="part-color" data-part="hands" value="#ff8844"><span class="part-toggle" data-part="hands">👁</span></div>
+    <div class="color-row"><span>脚</span><input type="color" class="part-color" data-part="feet" value="#44cc88"><span class="part-toggle" data-part="feet">👁</span></div>
+  </div>
+  <div id="card-container">
+    <div class="card-spotlight" data-spotlight-color="rgba(255, 51, 102, 0.2)" data-part="heart">
+      <div class="card-icon">❤</div>
+      <div class="card-title">心脏</div>
+      <div class="card-subtitle">项目经历</div>
+    </div>
+    <div class="card-spotlight" data-spotlight-color="rgba(68, 136, 255, 0.2)" data-part="body">
+      <div class="card-icon">🏃</div>
+      <div class="card-title">身体</div>
+      <div class="card-subtitle">技能</div>
+    </div>
+    <div class="card-spotlight" data-spotlight-color="rgba(255, 136, 68, 0.2)" data-part="hands">
+      <div class="card-icon">✋</div>
+      <div class="card-title">手</div>
+      <div class="card-subtitle">作品集</div>
+    </div>
+    <div class="card-spotlight" data-spotlight-color="rgba(68, 204, 136, 0.2)" data-part="feet">
+      <div class="card-icon">🦶</div>
+      <div class="card-title">脚</div>
+      <div class="card-subtitle">联系方式</div>
+    </div>
+  </div>
+  <script>
+    // SpotlightCard 追光效果
+    document.querySelectorAll('.card-spotlight').forEach(card => {
+      const color = card.dataset.spotlightColor;
+      card.style.setProperty('--spotlight-color', color);
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        card.style.setProperty('--mouse-x', x + 'px');
+        card.style.setProperty('--mouse-y', y + 'px');
+      });
+    });
+  </script>
+  <script type="module" src="/src/model-demo.js"></script>
+</body>
+</html>
