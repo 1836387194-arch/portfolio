@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { gsap } from 'gsap';
 
 // ============ 粒子纹理生成 ============
@@ -162,7 +163,10 @@ export default class GLBParticleSystem {
     this.glowTex = createGlowTexture(64, 'rgba(255,255,255,1)', 'rgba(255,255,255,0)');
 
     // GLTF 加载器
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
     this.loader = new GLTFLoader();
+    this.loader.setDRACOLoader(dracoLoader);
   }
 
   // ============ 顶点颜色计算：Y轴渐变 + 部位色混合 ============
