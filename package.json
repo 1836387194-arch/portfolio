@@ -1,7 +1,7 @@
 {
-  "name": "particle-human-portfolio",
+  "name": "portfolio",
   "version": "1.0.0",
-  "private": true,
+  "description": "Particle human portfolio website",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,8 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "three": "^0.170.0",
-    "gsap": "^3.12.0"
+    "gsap": "^3.12.0",
+    "three": "^0.170.0"
   },
   "devDependencies": {
     "vite": "^5.0.0"
