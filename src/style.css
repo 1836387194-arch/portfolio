@@ -779,37 +779,125 @@ body {
   transition: opacity 0.3s;
 }
 
-/* ===== 加载提示 ===== */
-#loading-hint {
+/* ===== 加载画面：RotatingText 动画 ===== */
+#loading-screen {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 50;
-  text-align: center;
-  transition: opacity 0.5s;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: url('/background.jpg') center/cover no-repeat fixed;
+  pointer-events: all;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+#loading-screen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+}
+#loading-screen.fade-out {
+  opacity: 0;
+  visibility: hidden;
   pointer-events: none;
 }
 
-#loading-hint p {
-  margin-top: 16px;
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.5);
-  letter-spacing: 0.05em;
+.loader-content {
+  position: relative;
+  z-index: 1;
 }
 
-.loading-spinner {
-  width: 40px;
-  height: 40px;
-  margin: 0 auto;
-  border: 3px solid rgba(255, 255, 255, 0.1);
-  border-top-color: #ffd700;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+/* RotatingText 盒子 */
+.rotate-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0.8rem 2rem;
+  background: rgba(30, 58, 95, 0.18);
+  border: 1px solid rgba(212, 160, 160, 0.22);
+  border-radius: 16px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 4px 40px rgba(0, 0, 0, 0.18), 0 0 60px rgba(212, 160, 160, 0.06);
+  overflow: hidden;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
+/* 固定前缀 "hello" */
+.rotate-prefix {
+  font-family: 'SF Pro Display', 'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: clamp(2.8rem, 7vw, 4.5rem);
+  font-weight: 600;
+  color: #f0ece8;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+  text-shadow: 0 3px 24px rgba(0, 0, 0, 0.3);
+  flex-shrink: 0;
+  white-space: nowrap;
+  margin-right: 0.25em;
+}
+
+/* 文本容器 */
+.rotate-text-inner {
+  display: flex;
+  flex-wrap: wrap;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 每个可旋转字符 — 玫瑰金 */
+.rotate-char {
+  display: inline-block;
+  font-family: 'SF Pro Display', 'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: clamp(2.8rem, 7vw, 4.5rem);
+  font-weight: 700;
+  color: #e8d0c0;
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+  text-shadow: 0 0 20px rgba(232, 208, 192, 0.3), 0 3px 16px rgba(0, 0, 0, 0.25);
+  white-space: pre;
+  will-change: transform, opacity;
+}
+
+/* 闪烁光标 — 玫瑰金 */
+.rotate-cursor {
+  display: inline-block;
+  font-family: 'SF Pro Display', 'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: clamp(2.8rem, 7vw, 4.5rem);
+  font-weight: 300;
+  color: #e8d0c0;
+  margin-left: 2px;
+  animation: cursor-blink 0.8s ease-in-out infinite;
+  text-shadow: 0 0 14px rgba(232, 208, 192, 0.35);
+  flex-shrink: 0;
+}
+
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.15; }
+}
+
+/* 加载完成 → 文字消散动画 */
+#loading-screen.done .rotate-box {
+  animation: box-dissolve 0.7s cubic-bezier(0.6, 0, 1, 1) forwards;
+}
+@keyframes box-dissolve {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+  40% {
+    opacity: 0.7;
+    transform: scale(1.04);
+    filter: blur(1px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.12);
+    filter: blur(8px);
+  }
 }
 
 /* ===== 操作提示 ===== */

@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>赵毓梅 · 个人作品集</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500&family=Ma+Shan+Zheng&family=Long+Cang&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg-img: url('magazine-bg.jpg');
+  --accent: #D4A0A0;
+  --text: #e8e4e1;
+  --text-secondary: #b8b3ae;
+  --text-muted: #7a7570;
+  --panel: rgba(12,12,20,0.6);
+  --border: rgba(255,255,255,0.08);
+  --border-accent: rgba(212,160,160,0.25);
+  --font-serif: 'Noto Serif SC', 'Songti SC', 'SimSun', serif;
+  --font-sans: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-hand: 'Long Cang', 'Ma Shan Zheng', 'KaiTi', cursive;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-snap-type: y mandatory;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background: #0a0a12;
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.85;
+  color: var(--text);
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: var(--bg-img) center/cover no-repeat;
+  filter: brightness(0.72) saturate(0.75);
+  z-index: -1;
+}
+
+/* ════════════ Page Indicator ════════════ */
+.page-indicator {
+  position: fixed; right: 1.2rem; top: 50%; transform: translateY(-50%);
+  z-index: 200; display: flex; flex-direction: column; gap: 0.55rem;
+  padding: 0.6rem 0.35rem; background: rgba(0,0,0,0.3);
+  border-radius: 20px; backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.page-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: rgba(255,255,255,0.18);
+  transition: all 0.35s cubic-bezier(0.4,0,0.2,1); cursor: pointer;
+}
+.page-dot.active {
+  background: var(--accent); box-shadow: 0 0 10px rgba(212,160,160,0.55);
+  transform: scale(1.4);
+}
+.page-dot:hover { background: rgba(255,255,255,0.45); transform: scale(1.2); }
+
+/* ════════════ Pages ════════════ */
+.page {
+  min-height: 100vh; scroll-snap-align: start;
+  display: flex; align-items: center; justify-content: center;
+  padding: 1.5rem 2rem; position: relative;
+}
+.page-inner { width: 100%; max-width: 960px; position: relative; }
+
+/* ════════════ COVER ════════════ */
+.cover-page {
+  text-align: center; display: flex; align-items: center; justify-content: center;
+  min-height: 100vh; scroll-snap-align: start; position: relative; padding: 2rem;
+}
+.cover-inner { position: relative; z-index: 1; }
+.cover-masthead {
+  font-family: var(--font-sans); font-size: 0.7rem; font-weight: 500;
+  letter-spacing: 0.6em; color: var(--accent); text-transform: uppercase;
+  margin-bottom: 2.5rem; opacity: 0.85;
+}
+.cover-title {
+  font-family: var(--font-serif); font-size: clamp(3rem,7vw,5.5rem); font-weight: 900;
+  line-height: 1.08; letter-spacing: 0.04em; color: #f0ece8;
+  margin-bottom: 1.2rem; text-shadow: 0 4px 40px rgba(0,0,0,0.4);
+}
+.cover-subtitle {
+  font-family: var(--font-serif); font-size: 1.15rem; font-weight: 400; font-style: italic;
+  color: var(--accent); letter-spacing: 0.25em; margin-bottom: 2.5rem;
+}
+.cover-divider { width: 60px; height: 1px; background: var(--accent); margin: 0 auto 2.2rem; opacity: 0.5; }
+.cover-name {
+  font-family: var(--font-serif); font-size: 1.4rem; font-weight: 600;
+  color: #f0ece8; letter-spacing: 0.15em; margin-bottom: 0.6rem;
+}
+.cover-contact {
+  font-family: var(--font-sans); font-size: 0.8rem; color: var(--text-muted);
+  letter-spacing: 0.06em; line-height: 1.9;
+}
+.cover-issue {
+  position: absolute; bottom: 2rem; left: 0; right: 0; text-align: center;
+  font-family: var(--font-sans); font-size: 0.6rem; letter-spacing: 0.35em;
+  color: var(--accent); opacity: 0.6; text-transform: uppercase;
+}
+.cover-screenshot {
+  position: absolute; right: 3%; top: 50%; transform: translateY(-50%) rotate(2deg);
+  width: 28%; min-width: 180px; opacity: 0.25; border-radius: 6px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5); pointer-events: none; z-index: 0;
+}
+.cover-screenshot.left { left: 3%; right: auto; transform: translateY(-50%) rotate(-2deg); }
+
+/* ════════════ Section Header ════════════ */
+.section-header { display: flex; align-items: flex-end; gap: 0.8rem; margin-bottom: 0.3rem; }
+.section-num {
+  font-family: var(--font-serif); font-size: 3rem; font-weight: 900;
+  color: var(--accent); line-height: 0.8; opacity: 0.35;
+}
+.section-tag {
+  font-family: var(--font-sans); font-size: 0.55rem; font-weight: 500;
+  letter-spacing: 0.35em; color: var(--accent); text-transform: uppercase;
+  padding: 0.2rem 0.7rem; border: 1px solid var(--border-accent);
+  display: inline-block; margin-bottom: 0.4rem;
+}
+
+/* ════════════ Page Title ════════════ */
+.page-title {
+  font-family: var(--font-serif); font-size: 1.6rem; font-weight: 700;
+  color: #f0ece8; letter-spacing: 0.04em; line-height: 1.25;
+  margin-bottom: 0.2rem; text-shadow: 0 2px 16px rgba(0,0,0,0.35);
+}
+.page-subtitle {
+  font-family: var(--font-serif); font-size: 0.82rem; font-weight: 400;
+  font-style: italic; color: var(--accent); margin-bottom: 1rem;
+  letter-spacing: 0.05em;
+}
+.title-line { width: 40px; height: 1px; background: var(--accent); opacity: 0.4; margin-bottom: 1rem; }
+
+/* ════════════ Content Panel ════════════ */
+.content-panel {
+  background: var(--panel); border: 1px solid var(--border);
+  padding: 1.2rem 1.4rem; backdrop-filter: blur(8px);
+}
+.content-panel h3 {
+  font-family: var(--font-serif); font-size: 0.85rem; font-weight: 600;
+  color: var(--accent); margin-bottom: 0.2rem; letter-spacing: 0.05em;
+}
+.content-panel h3 + p {
+  font-family: var(--font-serif); font-size: 0.78rem;
+  color: var(--text-secondary); line-height: 1.75; margin-bottom: 0.8rem;
+}
+.content-panel h3 + p.hand-strategy {
+  font-family: var(--font-hand); font-size: 0.95rem;
+  color: var(--accent); line-height: 1.65;
+}
+.expression-tags {
+  font-size: 0.75rem; color: var(--text-secondary); line-height: 1.6; margin-top: 0.2rem;
+}
+.expression-tags span {
+  display: inline-block; padding: 0.1rem 0.5rem;
+  margin: 0.1rem 0.25rem 0.1rem 0;
+  border: 1px solid rgba(255,255,255,0.1);
+  font-size: 0.7rem; color: var(--text-secondary);
+}
+
+/* ════════════ Article Text (full visible, no scroll) ════════════ */
+.article-text {
+  font-family: var(--font-serif);
+  font-size: 0.68rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+.article-text p {
+  margin-bottom: 0.2rem;
+  text-indent: 2em;
+}
+.article-text .section-break {
+  margin: 0.3rem 0; text-align: center; color: var(--accent);
+  font-size: 0.6rem; letter-spacing: 0.1em; text-indent: 0; opacity: 0.4;
+}
+
+/* ════════════ Image Placeholder ════════════ */
+.img-placeholder {
+  border: 1.5px dashed rgba(212,160,160,0.35);
+  background: rgba(212,160,160,0.04);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: 100px; color: var(--text-muted);
+  font-family: var(--font-sans); font-size: 0.7rem; letter-spacing: 0.06em;
+}
+.img-placeholder .ph-icon { font-size: 1.3rem; margin-bottom: 0.3rem; opacity: 0.4; }
+.img-placeholder .ph-label {
+  font-family: var(--font-serif); font-size: 0.68rem; color: var(--accent); opacity: 0.5;
+}
+
+/* ════════════ Annotation (handwritten) ════════════ */
+.annotation {
+  font-family: var(--font-hand);
+  font-size: 1.05rem;
+  color: var(--accent);
+  line-height: 1.7;
+  padding: 0.7rem 1rem;
+  border-left: 2px solid rgba(212,160,160,0.35);
+  background: rgba(212,160,160,0.04);
+  margin: 0.6rem 0;
+  position: relative;
+}
+.annotation::before {
+  content: '✎'; position: absolute; top: -0.5rem; left: 0.6rem;
+  font-size: 0.7rem; color: var(--accent); opacity: 0.5; font-family: serif;
+}
+
+/* ════════════ Achievement Badge ════════════ */
+.achievement {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  font-family: var(--font-serif); font-size: 0.75rem; font-weight: 600;
+  color: var(--accent); padding: 0.3rem 0.7rem; border: 1px solid var(--border-accent);
+  letter-spacing: 0.03em; background: rgba(212,160,160,0.06); margin-top: 0.4rem;
+}
+
+/* ════════════ Layouts ════════════ */
+.cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; }
+.cols-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+.cols-2-1 { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 1.1rem; }
+.cols-1-2 { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 1.1rem; }
+
+/* ════════════ About Me ════════════ */
+.about-info { background: var(--panel); border: 1px solid var(--border); padding: 1.4rem; backdrop-filter: blur(8px); }
+.about-info .info-row { display: flex; margin-bottom: 0.5rem; font-size: 0.85rem; line-height: 1.6; }
+.about-info .info-label { color: var(--accent); min-width: 4rem; font-weight: 500; letter-spacing: 0.05em; flex-shrink: 0; }
+.about-info .info-value { color: var(--text); }
+.about-strengths { background: var(--panel); border: 1px solid var(--border); padding: 1.4rem; backdrop-filter: blur(8px); }
+.about-strengths h4 {
+  font-family: var(--font-serif); font-size: 0.9rem; font-weight: 600;
+  color: var(--accent); margin-bottom: 0.8rem; letter-spacing: 0.06em;
+  padding-bottom: 0.4rem; border-bottom: 1px solid var(--border-accent);
+}
+.strength-item { margin-bottom: 0.8rem; }
+.strength-item .s-name { font-family: var(--font-serif); font-size: 0.82rem; font-weight: 600; color: #f0ece8; margin-bottom: 0.1rem; }
+.strength-item .s-desc { font-family: var(--font-serif); font-size: 0.73rem; color: var(--text-secondary); line-height: 1.65; }
+
+/* ════════════ Case Side Panel ════════════ */
+.case-side { display: flex; flex-direction: column; gap: 0.7rem; }
+.case-side-box {
+  background: var(--panel); border: 1px solid var(--border);
+  padding: 1rem 1.2rem; backdrop-filter: blur(8px);
+}
+.case-side-box h4 {
+  font-family: var(--font-serif); font-size: 0.78rem; font-weight: 600;
+  color: var(--accent); margin-bottom: 0.4rem; letter-spacing: 0.06em;
+}
+.case-side-box ul { list-style: none; padding: 0; }
+.case-side-box ul li {
+  font-family: var(--font-serif); font-size: 0.72rem;
+  color: var(--text-secondary); padding: 0.1rem 0; padding-left: 0.8rem;
+  position: relative; line-height: 1.6;
+}
+.case-side-box ul li::before {
+  content: '—'; position: absolute; left: 0; color: var(--accent); opacity: 0.45; font-size: 0.6rem; top: 0.15rem;
+}
+.case-side-box p {
+  font-family: var(--font-serif); font-size: 0.72rem; color: var(--text-secondary); line-height: 1.6;
+}
+/* 手写体内容策略 & 我的能力 */
+.case-side-box.hand-section h4 {
+  font-family: var(--font-hand); font-size: 1.1rem; letter-spacing: 0.04em;
+}
+.case-side-box.hand-section p,
+.case-side-box.hand-section ul li {
+  font-family: var(--font-hand); font-size: 0.95rem;
+}
+.case-side-box.hand-section ul li::before { font-family: var(--font-hand); }
+/* 方案图片 */
+.case-images { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-top: 0.8rem; }
+.case-images img {
+  width: 100%; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+}
+
+/* ════════════ AI Cards ════════════ */
+.ai-card {
+  background: var(--panel); border: 1px solid var(--border);
+  padding: 1.2rem 1.3rem; backdrop-filter: blur(8px);
+  display: flex; flex-direction: column;
+}
+.ai-card h4 { font-family: var(--font-serif); font-size: 0.88rem; font-weight: 600; color: var(--accent); margin-bottom: 0.15rem; letter-spacing: 0.04em; }
+.ai-card .ai-sub { font-family: var(--font-serif); font-size: 0.7rem; color: var(--text-secondary); font-style: italic; margin-bottom: 0.5rem; }
+.ai-card ul { list-style: none; padding: 0; flex: 1; }
+.ai-card ul li { font-family: var(--font-serif); font-size: 0.7rem; color: var(--text-secondary); padding: 0.08rem 0; padding-left: 0.6rem; position: relative; line-height: 1.6; }
+.ai-card ul li::before { content: '·'; position: absolute; left: 0; color: var(--accent); font-weight: bold; }
+.ai-card .ai-cap {
+  font-family: var(--font-hand); font-size: 0.95rem; color: var(--accent);
+  margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--border); line-height: 1.4;
+}
+
+/* ════════════ Skills ════════════ */
+.skills-col { background: var(--panel); border: 1px solid var(--border); padding: 1.3rem 1.4rem; backdrop-filter: blur(8px); }
+.skills-col h4 {
+  font-family: var(--font-serif); font-size: 0.9rem; font-weight: 600; color: var(--accent);
+  margin-bottom: 0.7rem; letter-spacing: 0.06em;
+  padding-bottom: 0.4rem; border-bottom: 1px solid var(--border-accent);
+}
+.skills-col ul { list-style: none; padding: 0; }
+.skills-col ul li { font-family: var(--font-serif); font-size: 0.8rem; color: var(--text-secondary); padding: 0.2rem 0; line-height: 1.6; }
+
+/* ════════════ Video Link ════════════ */
+.video-link {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-family: var(--font-serif); font-size: 0.72rem; color: var(--accent); text-decoration: none;
+  padding: 0.3rem 0.7rem; border: 1px solid var(--border-accent);
+  transition: all 0.3s ease; margin-top: 0.4rem; letter-spacing: 0.03em;
+}
+.video-link:hover { background: rgba(212,160,160,0.1); border-color: var(--accent); }
+.video-link .play-icon {
+  width: 16px; height: 16px; border: 1.5px solid var(--accent);
+  border-radius: 50%; display: flex; align-items: center;
+  justify-content: center; font-size: 0.5rem; flex-shrink: 0;
+}
+
+/* ════════════ Page Number ════════════ */
+.page-num {
+  position: absolute; bottom: 1rem; right: 1.5rem;
+  font-family: var(--font-serif); font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.2em;
+}
+
+/* ════════════ Scroll Hint ════════════ */
+.scroll-hint {
+  position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+  font-family: var(--font-sans); font-size: 0.55rem; letter-spacing: 0.35em;
+  color: var(--text-muted); animation: hintPulse 2.5s ease-in-out infinite;
+}
+@keyframes hintPulse { 0%,100%{opacity:0.2} 50%{opacity:0.7} }
+
+/* ════════════ Reveal ════════════ */
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22,0.61,0.36,1); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+
+/* ════════════ Responsive ════════════ */
+@media (max-width: 768px) {
+  .page { padding: 1rem; min-height: auto; scroll-snap-align: none; }
+  html { scroll-snap-type: none; }
+  .cols-2,.cols-3,.cols-2-1,.cols-1-2 { grid-template-columns: 1fr; }
+  .page-title { font-size: 1.3rem; } .cover-title { font-size: 2rem; }
+  .section-num { font-size: 2.2rem; }
+  .page-indicator,.scroll-hint { display: none; } .cover-screenshot { display: none; }
+}
+
+@media print {
+  body::before { display: none; } body { background: white; color: #1a1a1a; }
+  .page { min-height: auto; scroll-snap-align: none; padding: 1rem; }
+  html { scroll-snap-type: none; }
+  .page-indicator,.scroll-hint { display: none; }
+  .content-panel,.about-info,.about-strengths,.case-side-box,.ai-card,.skills-col {
+    background: none; border: 1px solid #ccc; backdrop-filter: none;
+  }
+  .page-title,.cover-title { color: #1a1a1a; text-shadow: none; }
+  .annotation { background: #f9f6f3; } .article-text { color: #333; }
+}
+</style>
+</head>
+<body>
+
+<nav class="page-indicator" id="dots"></nav>
+
+<!-- ════════════════ Page 1: COVER ════════════════ -->
+<section class="cover-page" id="p1">
+  <img class="cover-screenshot left" src="public/website-screenshot.png" alt="网站截图" onerror="this.style.display='none'">
+  <img class="cover-screenshot" src="public/website-screenshot.png" alt="网站截图" onerror="this.style.display='none'">
+  <div class="cover-inner reveal">
+    <div class="cover-masthead">个人作品集 · 2026</div>
+    <h1 class="cover-title">Personal<br>Portfolio</h1>
+    <div class="cover-subtitle">Content · Creativity · AI</div>
+    <div class="cover-divider"></div>
+    <div class="cover-name">赵毓梅</div>
+    <div class="cover-contact">1836387194@qq.com<br>portfolio.pages.dev</div>
+  </div>
+  <div class="cover-issue">Issue No.1 · July 2026 · Personal Archive</div>
+  <div class="scroll-hint">▼ 向下翻阅</div>
+</section>
+
+<!-- ════════════════ Page 2: ABOUT ME ════════════════ -->
+<section class="page" id="p2">
+  <div class="page-inner">
+    <div class="section-header reveal">
+      <span class="section-num">01</span>
+      <div><span class="section-tag">About Me</span></div>
+    </div>
+    <h2 class="page-title reveal reveal-delay-1">个人简介</h2>
+    <div class="title-line reveal reveal-delay-1"></div>
+    <div class="cols-2 reveal reveal-delay-2">
+      <div class="about-info">
+        <div class="info-row"><span class="info-label">姓名</span><span class="info-value">赵毓梅</span></div>
+        <div class="info-row"><span class="info-label">学校</span><span class="info-value">浙江工商大学</span></div>
+        <div class="info-row"><span class="info-label">专业</span><span class="info-value">审计学</span></div>
+        <div class="info-row"><span class="info-label">电话</span><span class="info-value">19357391013</span></div>
+        <div class="info-row"><span class="info-label">邮箱</span><span class="info-value">1836387194@qq.com</span></div>
+      </div>
+      <div class="about-strengths">
+        <h4>个人优势</h4>
+        <div class="strength-item"><div class="s-name">内容策划</div><div class="s-desc">能够从用户需求和情绪出发，发现内容机会并设计表达方式。</div></div>
+        <div class="strength-item"><div class="s-name">创意表达</div><div class="s-desc">具备文字创作、视频策划和视觉内容制作经验。</div></div>
+        <div class="strength-item"><div class="s-name">AI应用</div><div class="s-desc">能够利用AI工具辅助内容创作、开发实现和效率提升。</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="page-num">02</div>
+</section>
+
+<!-- ════════════════ Page 3: 在面试中崩溃大哭了 ════════════════ -->
+<section class="page" id="p3">
+  <div class="page-inner">
+    <div class="section-header reveal">
+      <span class="section-num">02</span>
+      <div><span class="section-tag">Content Strategy Case</span></div>
+    </div>
+    <h2 class="page-title reveal reveal-delay-1">《在面试中崩溃大哭了》</h2>
+    <p class="page-subtitle reveal reveal-delay-1">情绪观察 / 个人叙事内容创作</p>
+    <div class="title-line reveal reveal-delay-1"></div>
+
+    <div class="cols-2-1 reveal reveal-delay-2">
+      <!-- 左栏：原文全文 -->
+      <div class="content-panel">
+        <h3>原文</h3>
+        <div class="article-text">
+          <p>其实走进公司就有点不想面了，因为空调不是很凉，办公区的灯光也比较昏暗。面试官还迟到了十几分钟，大家都有点昏昏欲睡的感觉。</p>
+          <p>但来都来了，我还是比较认真地回答。Hr问的都是常规问题，业务经理处于一个非常松弛的眼睛微闭的垂听状态。</p>
+          <div class="section-break">· · ·</div>
+          <p>一个问题成为了导火索：怎么看待单休？我怎么看待，我投简历的时候第一个筛选条件就是双休。"法律规定一周的工作时间不能超过40个小时，一个管理完善的公司，也应该能够合理安排工作。"其实我已经有点想走了。</p>
+          <p>会议室突然出现一条横幅："你想辩出怎样的双休生活"</p>
+          <div class="section-break">· · ·</div>
+          <p>你觉得企业为什么单休？那些单休的工人为什么不反抗？浙江的民营经济为什么发展得这么好？</p>
+          <p>其实我有点辩不下去了。因为我的父母就是全年无休的工人，我知道那种辛苦与无奈。我受这辛苦得来的结果滋养，顺利考上了大学。</p>
+          <div class="section-break">· · ·</div>
+          <p>我马上闪回到小时候。父母几乎是凌晨五点就起床工作，只有在大节日才有假放。我记得厂里发的月饼，会掉渣渣，我不喜欢吃，但是发的王老吉还挺好喝的。</p>
+          <p>其实小时候的生活并不算太困难，仔细想想，甚至可以说很幸福。可能这就是网上说的有人在替你负重前行吧。</p>
+          <div class="section-break">· · ·</div>
+          <p>但辛苦得来的结果并不好消化，它们在我胃里富集蠕动，终于在今天吐了出来。所以他们为什么不反抗呢？我已经没有力气思考，因为我全部的力气都用来忍耐了。</p>
+          <p>我不能在面试的时候大哭吧，这显得我非常不能抗压啊。</p>
+          <div class="section-break">· · ·</div>
+          <p>面试官还在问常规的面试题，我努力以最简短的句子回复，想尽快结束。"你未来三年的目标是什么？"其实根本没想那么远，但我准备过这个问题的，和ai也是畅聊过职业规划。</p>
+          <p>我脑子里只有一个念头："我想租一个好房子。"临时短租的房子是个烟房，睡觉的时候总会被挥发出的烟味臭醒，然后昏过去，然后再次被臭醒。</p>
+          <p>我甚至觉得自己也已经被腌入味，说不定也在这会议室里散发着烟味。</p>
+          <div class="section-break">· · ·</div>
+          <p>太臭了，得分泌一点鼻涕过滤一下。于是我开始嚎啕大哭，可还是好臭，好臭。</p>
+        </div>
+      </div>
+
+      <!-- 右栏 -->
+      <div class="case-side">
+        <div class="case-side-box hand-section">
+          <h4>内容策略</h4>
+          <p>从"个人经历分享"转向"群体情绪表达"。通过真实场景和情绪细节，让读者产生代入感。</p>
+        </div>
+        <div class="case-side-box hand-section">
+          <h4>我的能力</h4>
+          <ul><li>情绪洞察</li><li>共鸣型内容创作</li></ul>
+        </div>
+        <div class="annotation reveal reveal-delay-3">第一人称叙事 · 场景化描写 · 情绪递进结构</div>
+      </div>
+    </div>
+  </div>
+  <div class="page-num">03</div>
+</section>
+
+<!-- ════════════════ Page 4: 不知道哪里冒出来的蝴蝶 ════════════════ -->
+<section class="page" id="p4">
+  <div class="page-inner">
+    <div class="section-header reveal">
+      <span class="section-num">03</span>
+      <div><span class="section-tag">Content Expression Case</span></div>
+    </div>
+    <h2 class="page-title reveal reveal-delay-1">《不知道哪里冒出来的蝴蝶》</h2>
+    <p class="page-subtitle reveal reveal-delay-1">文学表达 / 情绪观察</p>
+    <div class="title-line reveal reveal-delay-1"></div>
+
+    <div class="cols-2-1 reveal reveal-delay-2">
+      <div class="content-panel">
+        <h3>原文</h3>
+        <div class="article-text">
+          <p>不知道蝴蝶是从哪里冒出来的，还有草地上的野花。比夏天更早送来了夏天的感觉。想躺在草坪上，这个念头产生很久了，但轻飘飘的，总没有落地。</p>
+          <p>或许人总是要足够难过时才会有勇气做自己想做的，把"想要"变成"补偿"，就没那么贪心了，哪怕只是想躺在草坪上。</p>
+          <p>并没有想象中那么辽阔，视野里仍有树叶和突兀的楼。苍白中透出淡淡的蓝，明明是晴天，但不是好天气。扎人，刺痛，不合身的衬衫，反抗的草地。或许应该闭上眼睛。更刺痛了，但有了鸟叫，有了微风，有了泥土的味道。刺痛不再是一种感觉，变成了收获，是草地的礼物。</p>
+          <p>不知道从哪里冒出来的蝴蝶，在余光中闪烁着。太阳移了位置，我也该去寻找新的树荫。</p>
+          <p>起身才发现那不是蝴蝶，是有人在跳舞。衣摆随动作跳舞飘着，比蝴蝶更快带来风的感觉。但又不像蝴蝶，蝴蝶是上升的，他是落下来的。他到底像什么呢？像飘落的彩带，像成片的卷云，像鸽子的羽毛。总之是带着韧性和重量的。</p>
+          <p>他跳了好久，看起来很开心。白衬衫甩出了晚霞，天空没有那么惨白了。他似乎朝我看了过来，才意识到已经盯着他看很久了。</p>
+          <p>慌张心虚地躺下，却因为力度太猛又被扎得生疼，但视觉很快夺走了痛觉的注意力。整片的晚霞，只受眼眶限制的晚霞，像装在水晶球里的晚霞。莫名要流泪的冲动。</p>
+          <p>我知道他像什么了，像高考后从窗边散下的试卷。大家笑着吵闹着，在晚霞中给青春加了一个坐标。参照物越多，这个坐标就越确定越鲜明。越确定越鲜明，就越知道自己是在刻舟求剑。</p>
+          <p>晚霞的边缘出现一抹白色，"我说，看来你是真的不记得我了啊。"他躺在了我旁边，不近不远处，带起了一阵青草味，比青春更长地带来了青春的感觉。</p>
+        </div>
+      </div>
+
+      <div class="case-side">
+        <div class="case-side-box hand-section">
+          <h4>内容策略</h4>
+          <p>从普通事件中提炼情绪价值。通过细节化表达，让平凡场景产生情感连接。</p>
+        </div>
+        <div class="case-side-box hand-section">
+          <h4>我的能力</h4>
+          <ul><li>生活观察能力</li><li>情绪感知能力</li><li>文字表达能力</li></ul>
+        </div>
+        <div class="annotation reveal reveal-delay-3">场景化描写 · 细节捕捉 · 氛围感营造</div>
+      </div>
+    </div>
+  </div>
+  <div class="page-num">04</div>
+</section>
+
+<!-- ════════════════ Page 5: 学院招生宣传视频策划 ════════════════ -->
+<section class="page" id="p5">
+  <div class="page-inner">
+    <div class="section-header reveal">
+      <span class="section-num">04</span>
+      <div><span class="section-tag">Content Campaign Case</span></div>
+    </div>
+    <h2 class="page-title reveal reveal-delay-1">学院招生宣传视频策划</h2>
+    <p class="page-subtitle reveal reveal-delay-1">校园品牌传播 / 视频内容策划</p>
+    <div class="title-line reveal reveal-delay-1"></div>
+
+    <div class="cols-2-1 reveal reveal-delay-2">
+      <div class="content-panel">
+        <h3>背景</h3>
+        <p>针对新生群体，希望通过短视频展示大学生活，让潜在学生提前感受到学院氛围，而不是简单展示校园信息。</p>
+        <h3>内容策略</h3>
+        <p class="hand-strategy">从"介绍学校"转向"传递成长价值"。通过记录大学生日常学习、生活和成长瞬间，表达：看似普通的每一天，都在积累经历并获得成长。</p>
+        <a class="video-link" href="https://www.xinpianchang.com/a13754325?from=webShare&channel=copyLink" target="_blank" rel="noopener"><span class="play-icon">▶</span> 观看视频：《人类高质量大学生流水账》</a>
+      </div>
+      <div class="case-side">
+        <div class="case-side-box hand-section">
+          <h4>我的角色</h4>
+          <ul><li>核心主题策划</li><li>内容框架设计</li><li>视频脚本构思</li><li>视频剪辑制作</li></ul>
+        </div>
+        <div class="annotation reveal reveal-delay-3">日常化场景叙事 · 真实感情绪表达 · 成长主题传递</div>
+        <div class="achievement">🏆 学院招生宣传比赛一等奖</div>
+      </div>
+    </div>
+  </div>
+  <div class="page-num">05</div>
+</section>
+
+<!-- ════════════════ Page 6: 校园数字化建设金点子 ════════════════ -->
+<section class="page" id="p6">
+  <div class="page-inner">
+    <div class="section-header reveal">
+      <span class="section-num">05</span>
+      <div><span class="section-tag">Product Content Case</span></div>
+    </div>
+    <h2 class="page-title reveal reveal-delay-1">校园数字化建设金点子</h2>
+    <p class="page-subtitle reveal reveal-delay-1">用户需求洞察 / 产品创意策划</p>
+    <div class="title-line reveal reveal-delay-1"></div>
+
+    <div class="cols-2-1 reveal reveal-delay-2">
+      <div class="content-panel">
+        <h3>项目背景</h3>
+        <p>发现校园生活中洗衣等待时间长、信息不透明的问题，希望通过数字化方式提升学生生活体验。</p>
+        <h3>内容策略</h3>
+        <p class="hand-strategy">从用户痛点出发，将生活需求转化为产品创意。通过用户视角分析问题，并设计解决方案。</p>
+        <div class="case-images">
+          <img src="jindianzi-1.png" alt="金点子方案截图1">
+          <img src="jindianzi-2.png" alt="金点子方案截图2">
+        </div>
+      </div>
+      <div class="case-side">
+        <div class="case-side-box hand-section">
+          <h4>我的角色</h4>
+          <ul><li>用户需求分析</li><li>方案结构设计</li><li>AI辅助方案优化</li></ul>
+        </div>
+        <div class="annotation reveal reveal-delay-3">用户需求洞察 · 产品方案设计 · 创意逻辑梳理</div>
+        <div class="achievement">🏆 校园数字化建设金点子大赛二等奖</div>
+      </div>
+    </div>
+  </div>
+  <div class="page-num">06</div>
+</section>
+
+<!-- ════════════════ Page 7: AI × CONTENT WORKFLOW ════════════════ -->
+<section class="page" id="p7">
+  <div class="page-inner">
+    <div class="section-header reveal">
+      <span class="section-num">06</span>
+      <div><span class="section-tag">AI × Content Workflow</span></div>
+    </div>
+    <h2 class="page-title reveal reveal-delay-1">AI辅助内容生产与创意实践</h2>
+    <p class="page-subtitle reveal reveal-delay-1">核心理念：AI不是替代创意，而是提升创意落地效率的工具。</p>
+    <div class="title-line reveal reveal-delay-1"></div>
+
+    <div class="cols-3 reveal reveal-delay-2">
+      <div class="ai-card">
+        <h4>AI × 产品实践</h4>
+        <div class="ai-sub">个人作品集网站</div>
+        <ul><li>利用AI拆解产品需求</li><li>辅助完成代码开发</li><li>优化页面交互设计</li><li>多轮Prompt迭代提升效果</li></ul>
+        <div class="ai-cap">创意落地能力 · AI协作能力</div>
+      </div>
+      <div class="ai-card">
+        <h4>AI × 数据分析</h4>
+        <div class="ai-sub">Python自动化与可视化</div>
+        <ul><li>采购数据处理脚本</li><li>数据自动化处理</li><li>数据可视化展示</li></ul>
+        <div class="ai-cap">数据思维 · 效率提升</div>
+      </div>
+      <div class="ai-card">
+        <h4>AI × 内容优化</h4>
+        <div class="ai-sub">创意表达与方案优化</div>
+        <ul><li>方案结构梳理</li><li>文案优化</li><li>创意发散</li><li>内容迭代</li></ul>
+        <div class="ai-cap">AI时代内容生产能力</div>
+      </div>
+    </div>
+  </div>
+  <div class="page-num">07</div>
+</section>
+
+<!-- ════════════════ Page 8: SKILLS & AWARDS ════════════════ -->
+<section class="page" id="p8">
+  <div class="page-inner">
+    <div class="section-header reveal">
+      <span class="section-num">07</span>
+      <div><span class="section-tag">Skills & Awards</span></div>
+    </div>
+    <h2 class="page-title reveal reveal-delay-1">技能与荣誉</h2>
+    <div class="title-line reveal reveal-delay-1"></div>
+
+    <div class="cols-3 reveal reveal-delay-2">
+      <div class="skills-col">
+        <h4>技能</h4>
+        <ul><li>AI协作开发</li><li>Python</li><li>Power BI</li><li>Power Query</li><li>视频剪辑</li></ul>
+      </div>
+      <div class="skills-col">
+        <h4>奖项</h4>
+        <ul><li>国家励志奖学金</li><li>浙江省财会信息化大赛省二等奖</li><li>校综合三等奖学金</li><li>校单项奖学金</li><li>学院招生宣传比赛一等奖</li><li>校园数字化建设金点子二等奖</li></ul>
+      </div>
+      <div class="skills-col">
+        <h4>认证</h4>
+        <ul><li>CET-4</li><li>CET-6</li><li>浙江省计算机二级</li><li>初级会计证书</li></ul>
+      </div>
+    </div>
+  </div>
+  <div class="page-num">08</div>
+</section>
+
+<script>
+const pages = document.querySelectorAll('.page, .cover-page');
+const dotsNav = document.getElementById('dots');
+pages.forEach((_, i) => {
+  const dot = document.createElement('span');
+  dot.className = 'page-dot';
+  dot.title = `第 ${i+1} 页`;
+  dot.addEventListener('click', () => pages[i].scrollIntoView({ behavior: 'smooth' }));
+  dotsNav.appendChild(dot);
+});
+const dots = document.querySelectorAll('.page-dot');
+dots[0]?.classList.add('active');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const idx = Array.from(pages).indexOf(entry.target);
+      dots.forEach(d => d.classList.remove('active'));
+      if (dots[idx]) dots[idx].classList.add('active');
+    }
+  });
+}, { threshold: 0.5 });
+pages.forEach(page => observer.observe(page));
+
+const revealEls = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+}, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+revealEls.forEach(el => revealObserver.observe(el));
+
+let currentPage = 0;
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+    e.preventDefault();
+    currentPage = Math.min(currentPage + 1, pages.length - 1);
+    pages[currentPage].scrollIntoView({ behavior: 'smooth' });
+  } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+    e.preventDefault();
+    currentPage = Math.max(currentPage - 1, 0);
+    pages[currentPage].scrollIntoView({ behavior: 'smooth' });
+  }
+});
+const pageObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => { if (entry.isIntersecting) currentPage = Array.from(pages).indexOf(entry.target); });
+}, { threshold: 0.6 });
+pages.forEach(page => pageObserver.observe(page));
+</script>
+</body>
+</html>

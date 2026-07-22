@@ -36,23 +36,129 @@ class App {
       ambientColor2: '#0000ff',
     });
 
-    // 显示加载进度
-    const loadingHint = document.getElementById('loading-hint');
-    await this.particleSystem.loadModel('/human-model.glb', (progress) => {
-      if (loadingHint) {
-        loadingHint.querySelector('p').textContent = `加载中... ${Math.round(progress * 100)}%`;
-      }
-    });
+    // ===== RotatingText 加载动画 =====
+    const loadingScreen = document.getElementById('loading-screen');
+    const rotateInner = document.getElementById('rotate-text-inner');
 
-    // 隐藏加载提示
-    if (loadingHint) {
-      loadingHint.style.opacity = '0';
-      setTimeout(() => loadingHint.remove(), 500);
-    }
+    const texts = ['我是赵毓梅', '你也可以叫我赵明灯', '或者zoey'];
+    let currentIndex = 0;
+    let rotateTimer = null;
+    let isRotating = true;
+
+    // 分割文本为字符数组
+    const splitChars = (text) => {
+      const chars = [];
+      for (const char of text) chars.push(char);
+      return chars;
+    };
+
+    // 渲染字符到旋转区域
+    const renderChars = (text) => {
+      rotateInner.innerHTML = '';
+      const chars = splitChars(text);
+      chars.forEach((char) => {
+        const span = document.createElement('span');
+        span.className = 'rotate-char';
+        span.textContent = char;
+        rotateInner.appendChild(span);
+      });
+      return rotateInner.querySelectorAll('.rotate-char');
+    };
+
+    // 执行一次旋转：旧文字退出 → 新文字进入
+    const doRotate = () => {
+      if (!isRotating) return;
+      const oldChars = rotateInner.querySelectorAll('.rotate-char');
+      currentIndex = (currentIndex + 1) % texts.length;
+      const newText = texts[currentIndex];
+
+      const tl = gsap.timeline();
+
+      // 退出：旧字符 stagger from last（最后一个先飞走）
+      if (oldChars.length > 0) {
+        const exitTargets = Array.from(oldChars).reverse();
+        tl.to(exitTargets, {
+          y: '-140%',
+          opacity: 0,
+          duration: 0.35,
+          stagger: 0.02,
+          ease: 'power2.in',
+        }, 0);
+      }
+
+      // 清除旧 DOM，渲染新文字
+      tl.call(() => {
+        renderChars(newText);
+      }, null, '>');
+
+      // 进入：新字符从下方弹入，stagger from last
+      const newChars = rotateInner.querySelectorAll('.rotate-char');
+      const enterTargets = Array.from(newChars).reverse();
+      tl.fromTo(enterTargets,
+        { y: '120%', opacity: 0, scale: 0.7 },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 0.5,
+          stagger: 0.025,
+          ease: 'back.out(1.7)',
+        },
+        '>-=0.05'
+      );
+
+      return tl;
+    };
+
+    // 启动旋转循环
+    const startRotation = () => {
+      // 首次渲染
+      renderChars(texts[0]);
+      const firstChars = rotateInner.querySelectorAll('.rotate-char');
+      const enterTargets = Array.from(firstChars).reverse();
+      gsap.fromTo(enterTargets,
+        { y: '120%', opacity: 0, scale: 0.7 },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 0.5,
+          stagger: 0.025,
+          ease: 'back.out(1.7)',
+        }
+      );
+
+      // 定时旋转
+      rotateTimer = setInterval(() => doRotate(), 2800);
+    };
+
+    // 停止旋转
+    const stopRotation = () => {
+      isRotating = false;
+      if (rotateTimer) clearInterval(rotateTimer);
+    };
+
+    startRotation();
+
+    // 加载模型（旋转动画在后台持续运行）
+    await this.particleSystem.loadModel('/human-model.glb', (progress) => {
+      // progress 可用于微调旋转速度等，此处保持简洁
+    });
 
     console.log(`[App] 粒子系统就绪: ${this.particleSystem.getTotalParticles().toLocaleString()} 个粒子`);
 
-    // 8. 开场文字动画：页面加载后立即逐字入场
+    // 加载完成：停止旋转 → 消散 → 隐藏加载画面
+    stopRotation();
+    if (loadingScreen) {
+      // 等当前旋转动画完成
+      await new Promise(resolve => setTimeout(resolve, 500));
+      loadingScreen.classList.add('done');
+      await new Promise(resolve => setTimeout(resolve, 700));
+      loadingScreen.classList.add('fade-out');
+      await new Promise(resolve => setTimeout(resolve, 600));
+    }
+
+    // 开场文字动画：页面加载后立即逐字入场
     const heroText = document.getElementById('hero-text');
     if (heroText) {
       const heroLeft = heroText.querySelector('.hero-left');
@@ -220,8 +326,11 @@ class App {
 const app = new App();
 app.init().catch((err) => {
   console.error('[App] 初始化失败:', err);
-  const loadingHint = document.getElementById('loading-hint');
-  if (loadingHint) {
-    loadingHint.innerHTML = `<p style="color:#ff4444">加载失败: ${err.message}</p>`;
+  const loadingScreen = document.getElementById('loading-screen');
+  if (loadingScreen) {
+    const rotateInner = document.getElementById('rotate-text-inner');
+    if (rotateInner) {
+      rotateInner.innerHTML = `<span class="rotate-char" style="color:#ff5555">加载失败: ${err.message}</span>`;
+    }
   }
 });
