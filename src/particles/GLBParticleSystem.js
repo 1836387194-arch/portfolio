@@ -164,7 +164,7 @@ export default class GLBParticleSystem {
 
     // GLTF 加载器
     const dracoLoader = new DRACOLoader();
-    dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
+    dracoLoader.setDecoderPath('/draco/');
     this.loader = new GLTFLoader();
     this.loader.setDRACOLoader(dracoLoader);
   }

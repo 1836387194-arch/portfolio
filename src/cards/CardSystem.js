@@ -25,11 +25,11 @@ export default class CardSystem {
   static getDefaultDefinitions() {
     const deg2rad = (d) => d * Math.PI / 180;
     return [
-      { part: 'heart', title: 'Story', subtitle: '我的文字', baseAngle: deg2rad(0), yOffset: 0.05, bgImage: '/card-story.jpg' },
-      { part: 'head', title: 'Vision', subtitle: '视频作品', baseAngle: deg2rad(72), yOffset: 0.35, bgImage: '/card-vision.jpg' },
-      { part: 'hands', title: 'Creation', subtitle: 'AI协作实践', baseAngle: deg2rad(144), yOffset: 0.12, bgImage: '/card-creation.jpg' },
-      { part: 'body', title: 'Journey', subtitle: '我的经历', baseAngle: deg2rad(216), yOffset: -0.12, bgImage: '/card-journey.jpg' },
-      { part: 'feet', title: 'Capabilities', subtitle: '我的能力', baseAngle: deg2rad(288), yOffset: -0.40, bgImage: '/card-structure.jpg' },
+      { part: 'heart', title: 'Story', subtitle: '我的文字', baseAngle: deg2rad(0), yOffset: 0.05, bgImage: '/card-story.webp' },
+      { part: 'head', title: 'Vision', subtitle: '视频作品', baseAngle: deg2rad(72), yOffset: 0.35, bgImage: '/card-vision.webp' },
+      { part: 'hands', title: 'Creation', subtitle: 'AI协作实践', baseAngle: deg2rad(144), yOffset: 0.12, bgImage: '/card-creation.webp' },
+      { part: 'body', title: 'Journey', subtitle: '我的经历', baseAngle: deg2rad(216), yOffset: -0.12, bgImage: '/card-journey.webp' },
+      { part: 'feet', title: 'Capabilities', subtitle: '我的能力', baseAngle: deg2rad(288), yOffset: -0.40, bgImage: '/card-structure.webp' },
     ];
   }
 
