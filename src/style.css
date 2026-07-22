@@ -807,6 +807,22 @@ body {
 .loader-content {
   position: relative;
   z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+/* 固定前缀 "hello" — 在框外 */
+.rotate-prefix {
+  font-family: 'SF Pro Display', 'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: clamp(3rem, 7vw, 4.5rem);
+  font-weight: 600;
+  color: #f0ece8;
+  letter-spacing: 0.03em;
+  line-height: 1;
+  text-shadow: 0 4px 32px rgba(0, 0, 0, 0.35);
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 /* RotatingText 盒子 */
@@ -824,20 +840,6 @@ body {
   overflow: hidden;
 }
 
-/* 固定前缀 "hello" */
-.rotate-prefix {
-  font-family: 'SF Pro Display', 'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-  font-size: clamp(2.8rem, 7vw, 4.5rem);
-  font-weight: 600;
-  color: #f0ece8;
-  letter-spacing: 0.02em;
-  line-height: 1.1;
-  text-shadow: 0 3px 24px rgba(0, 0, 0, 0.3);
-  flex-shrink: 0;
-  white-space: nowrap;
-  margin-right: 0.25em;
-}
-
 /* 文本容器 */
 .rotate-text-inner {
   display: flex;
@@ -850,12 +852,12 @@ body {
 .rotate-char {
   display: inline-block;
   font-family: 'SF Pro Display', 'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-  font-size: clamp(2.8rem, 7vw, 4.5rem);
+  font-size: clamp(3rem, 7vw, 4.5rem);
   font-weight: 700;
   color: #e8d0c0;
-  letter-spacing: 0.04em;
-  line-height: 1.1;
-  text-shadow: 0 0 20px rgba(232, 208, 192, 0.3), 0 3px 16px rgba(0, 0, 0, 0.25);
+  letter-spacing: 0.05em;
+  line-height: 1;
+  text-shadow: 0 0 24px rgba(232, 208, 192, 0.3), 0 4px 20px rgba(0, 0, 0, 0.25);
   white-space: pre;
   will-change: transform, opacity;
 }
@@ -864,12 +866,12 @@ body {
 .rotate-cursor {
   display: inline-block;
   font-family: 'SF Pro Display', 'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-  font-size: clamp(2.8rem, 7vw, 4.5rem);
+  font-size: clamp(3rem, 7vw, 4.5rem);
   font-weight: 300;
   color: #e8d0c0;
   margin-left: 2px;
   animation: cursor-blink 0.8s ease-in-out infinite;
-  text-shadow: 0 0 14px rgba(232, 208, 192, 0.35);
+  text-shadow: 0 0 16px rgba(232, 208, 192, 0.35);
   flex-shrink: 0;
 }
 

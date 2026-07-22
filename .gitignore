@@ -5,3 +5,23 @@ dist/
 *.log
 .DS_Store
 Thumbs.db
+
+# 杂志版作品集 / PDF / PPT（非粒子人网站）
+magazine*.html
+magazine*.jpg
+magazine*.png
+*.pdf
+*.pptx
+ppt-assets/
+jindianzi*.png
+jindianzi*.jpg
+classify-debug.html
+model-demo.html
+article*.png
+pdf_preview.png
+ref-style.png
+public/ppt-bg.jpg
+public/slide-bg.jpg
+public/website-screenshot.png
+public/particle-debug.html
+src/model-demo.js
