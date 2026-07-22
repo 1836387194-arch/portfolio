@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  base: '/portfolio/',
   root: '.',
   publicDir: 'public',
   server: {
@@ -14,7 +13,13 @@ export default defineConfig({
     target: 'es2020',
     chunkSizeWarningLimit: 1000,
     sourcemap: false,
-    minify: 'esbuild',
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
+    },
     rollupOptions: {
       output: {
         manualChunks(id) {
